@@ -361,9 +361,13 @@ lib.warnIf (mem == 2048) ''
       "-device" "qemu-xhci"
     ]
     ++
-    lib.optionals (vsock.cid != null) [
-      "-device"
-      "vhost-vsock-${devType},guest-cid=${toString vsock.cid}"
+    lib.optionals (vsock.cid != null && vsock.vhostBackend == "kernel") [
+      "-device" "vhost-vsock-${devType},guest-cid=${toString vsock.cid}"
+    ]
+    ++
+    lib.optionals (vsock.cid != null && vsock.vhostBackend == "user") [
+      "-chardev" "socket,id=vsock${toString vsock.cid},reconnect-ms=0,path=vhost.socket"
+      "-device" "vhost-user-vsock-${devType},chardev=vsock${toString vsock.cid}"
     ]
     ++
     extraArgs

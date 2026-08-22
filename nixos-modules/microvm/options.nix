@@ -519,6 +519,14 @@ in
           - Or use: `microvm -s <vmname>`
         '';
       };
+
+      vhostBackend = mkOption {
+        default = "kernel";
+        type = types.enum [ "kernel" "user" ];
+        description = ''
+        Select vhost backend # TODO: write description
+        '';
+      };
     };
 
     registerWithMachined = mkOption {
