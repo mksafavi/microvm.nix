@@ -24,7 +24,6 @@ def main():
         # read event payload and print it to stderr
         headers = dict([x.split(':') for x in line.split()])
         sys.stdin.read(int(headers['len']))
-        # body = dict([x.split(':') for x in data.split()])
 
         if headers["eventname"] == "PROCESS_STATE_RUNNING":
             count += 1
