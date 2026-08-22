@@ -491,18 +491,21 @@ in
       });
     };
 
-    vsock.cid = mkOption {
-      default = null;
-      type = with types; nullOr int;
-      description = ''
-        Virtual Machine address;
-        setting it enables AF_VSOCK
+    vsock = {
+      cid = mkOption {
+        default = null;
+        type = with types; nullOr int;
+        description = ''
+          Virtual Machine address;
+          setting it enables AF_VSOCK
 
-        The following are reserved:
-        - 0: Hypervisor
-        - 1: Loopback
-        - 2: Host
-      '';
+          The following are reserved:
+          - 0: Hypervisor
+          - 1: Loopback
+          - 2: Host
+        '';
+      };
+
     };
 
     registerWithMachined = mkOption {
