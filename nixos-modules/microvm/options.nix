@@ -527,6 +527,13 @@ in
         Select vhost backend # TODO: write description
         '';
       };
+
+      groups = mkOption { # TODO: impl
+        default = null;
+        type = with types; nullOr listOf str;
+        description = ''
+        '';
+      };
     };
 
     registerWithMachined = mkOption {
