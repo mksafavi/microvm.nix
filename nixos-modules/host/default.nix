@@ -182,6 +182,11 @@ in
         path = lib.mkForce [];
         overrideStrategy = "asDropin";
       };
+      "microvm-vhost-device-vsock@${name}" = {
+        serviceConfig.X-RestartIfChanged = [ "" microvmConfig.restartIfChanged ];
+        path = lib.mkForce [];
+        overrideStrategy = "asDropin";
+      };
     })) {
       "microvm-tap-interfaces@" = {
         description = "Setup MicroVM '%i' TAP interfaces";
@@ -251,6 +256,24 @@ in
           };
         };
 
+      "microvm-vhost-device-vsock@" = {
+        description = "vhost vsock userspace daemon for MicroVM '%i'";
+        before = [ "microvm@%i.service" ];
+        partOf = [ "microvm@%i.service" ];
+        after = [ "microvm-set-booted@%i.service" ];
+        unitConfig.ConditionPathExists = "${stateDir}/%i/current/bin/vhost-device-vsock-run";
+        restartIfChanged = false;
+        serviceConfig = {
+          Restart = "always";
+          RestartSec = "5s";
+          SyslogIdentifier = "microvm-vhost-device-vsock@%i";
+          WorkingDirectory = "${stateDir}/%i";
+          User = user;
+          Group = group;
+          ExecStart = "${stateDir}/%i/current/bin/vhost-device-vsock-run";
+        };
+      };
+
       "microvm-set-booted@" = {
         description = "Save MicroVM '%i' booted configuration";
         before = [ "microvm@%i.service" ];
@@ -278,6 +301,7 @@ in
           "microvm-macvtap-interfaces@%i.service"
           "microvm-pci-devices@%i.service"
           "microvm-virtiofsd@%i.service"
+          "microvm-vhost-device-vsock@%i.service"
           "microvm-set-booted@%i.service"
         ];
         after = [
@@ -287,6 +311,7 @@ in
           "microvm-macvtap-interfaces@%i.service"
           "microvm-pci-devices@%i.service"
           "microvm-virtiofsd@%i.service"
+          "microvm-vhost-device-vsock@%i.service"
           "microvm-set-booted@%i.service"
         ];
         unitConfig.ConditionPathExists = "${stateDir}/%i/current/bin/microvm-run";
